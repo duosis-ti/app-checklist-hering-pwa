@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState, type FormEvent, type ReactNode } from 'react';
 import {
-  attachPhoto, createExecution, deactivateTemplate, executionErrors, finishExecution,
+  ApiError, attachPhoto, createExecution, deactivateTemplate, executionErrors, finishExecution,
   getSession, loadData, login, logout, photoUrl, saveExecution, saveTemplate,
   startSync, subscribe, syncNow, updateAction,
   type ActionPlan, type Answer, type AnswerValue, type Execution, type PhotoMeta,
@@ -281,7 +281,16 @@ export default function App() {
     if (status === 'completed' && !actionFile) { setPageError('Adicione uma foto da correção.'); document.getElementById('correction-photo')?.focus(); return; }
     setBusy('action'); setPageError('');
     try { const updated = await updateAction(action, status, actionFile ?? undefined); setAction(updated); setActionFile(null); await refresh(); notify(status === 'completed' ? 'Ação concluída.' : 'Ação em andamento.'); }
-    catch (error) { setPageError(message(error)); }
+    catch (error) {
+      if (error instanceof ApiError && error.status === 409) {
+        try {
+          const currentData = await loadData(); setData(currentData);
+          const currentAction = currentData.actions.find(entry => entry.id === action.id);
+          if (currentAction) setAction(currentAction);
+          setPageError('Esta ação foi atualizada. Confira as informações antes de tentar novamente.');
+        } catch { setPageError(message(error)); }
+      } else setPageError(message(error));
+    }
     finally { setBusy(''); }
   }
 
