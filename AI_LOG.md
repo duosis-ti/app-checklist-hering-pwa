@@ -4,6 +4,8 @@
 
 Codex foi utilizado para ler e analisar o desafio, discutir arquitetura, dividir o trabalho entre agentes de implementação e revisão, produzir código e documentação e executar verificações. A revisão de UX e UI considerou o fluxo mobile, estados offline, recuperação de fotos e comunicação breve.
 
+Após a autorização de publicação, os agentes também prepararam o build conjunto de frontend e API, o hosting Node com proxy S3 e a implantação Railway. O repositório criado é privado: [duosis-ti/app-checklist-hering-pwa](https://github.com/duosis-ti/app-checklist-hering-pwa). A [aplicação foi publicada e testada](https://app-production-5aedb.up.railway.app), com PostgreSQL e SeaweedFS separados e volumes persistentes.
+
 Os agentes trabalham no mesmo repositório. A divisão de trabalho e as revisões por outros agentes também são uso de IA, não revisão humana independente.
 
 ## Prompts importantes
@@ -25,6 +27,12 @@ Os trechos abaixo são registros resumidos do contexto e das solicitações rece
 5. **Fotos falharam no IndexedDB do WebKit.** O teste offline passou no Chromium, mas falhou ao salvar a imagem no WebKit. Uma reprodução mínima também falhou ao armazenar um `Blob` simples, com `UnknownError: Error preparing Blob/File data to be stored in object store`. A persistência foi alterada para guardar bytes em `ArrayBuffer` no IndexedDB e reconstituir o `Blob` para exibição e upload, preservando a leitura do formato anterior. Após a correção, o fluxo de foto, recarga offline, finalização e sincronização passou nos dois navegadores. A limpeza imediata do campo de arquivo também foi corrigida como medida de robustez, mas não era a causa comprovada dessa falha.
 
 Esses erros foram detectados e corrigidos durante desenvolvimento e verificação por agentes de IA. Isso não equivale a uma auditoria humana independente.
+
+## Verificações registradas
+
+Foram aprovados 10 testes da API, incluindo PostgreSQL e SeaweedFS reais, hosting da SPA e uploads/leituras assinadas pelo proxy Node. Também foram aprovados 8 cenários de ponta a ponta em Chromium e WebKit, tanto no Compose quanto no build conjunto de `Dockerfile.deploy` servido localmente na porta 8089.
+
+Na implantação Railway, os três serviços iniciaram, o endpoint de saúde respondeu HTTP 200 e os mesmos 8 cenários de ponta a ponta passaram na URL publicada. Também foram conferidos acesso à foto com assinatura (HTTP 200), rejeição sem assinatura (HTTP 403) e rejeição de acesso protegido sem JWT (HTTP 401). Os resultados são de testes automatizados e revisão de screenshots; não foram realizados testes em aparelhos físicos.
 
 ## Trabalho sem IA
 

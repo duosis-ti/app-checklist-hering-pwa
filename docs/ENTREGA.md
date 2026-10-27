@@ -72,7 +72,7 @@ Este roteiro descreve o que verificar, não afirma que os testes já foram execu
 4. Como operador, abrir um modelo, responder itens e retomar uma execução interrompida.
 5. Tentar finalizar com item obrigatório sem resposta e com Não conforme sem foto; conferir mensagens e foco no problema.
 6. Responder Conforme, Não conforme e Não se aplica; conferir a pontuação, que exclui Não se aplica.
-7. Após o primeiro acesso online, ativar modo avião, recarregar o app, executar um checklist, adicionar foto e finalizar.
+7. Após o primeiro acesso online e a indicação “Disponível offline”, desativar a conexão, recarregar o app, executar um checklist, adicionar foto e finalizar. Em `localhost`, usar DevTools → Network → Offline; apenas desligar Wi-Fi não interrompe o acesso local.
 8. Fechar e reabrir o aplicativo offline; conferir respostas e fotos locais.
 9. Restabelecer a conexão; conferir o envio automático, as imagens no histórico e a ausência de registros duplicados após reenvio.
 10. Interromper a conexão durante o envio de uma foto; conferir que a execução fica pendente ou com erro e que a nova tentativa preserva os dados.
@@ -81,4 +81,14 @@ Este roteiro descreve o que verificar, não afirma que os testes já foram execu
 
 ## Evidências
 
-As evidências executadas ficam na seção “Evidências da entrega” do README. Foram aprovados 7 testes da API e 8 cenários de ponta a ponta em Chromium e WebKit, incluindo o fluxo completo offline e a conclusão de ações na interface do gerente. A revisão de telas não substitui instalação e câmera em aparelhos físicos.
+As evidências executadas ficam na seção “Evidências da entrega” do README. Foram aprovados 10 testes da API e 8 cenários de ponta a ponta em Chromium e WebKit, incluindo o fluxo completo offline e a conclusão de ações na interface do gerente. Os testes da API incluem o hosting Node e uploads/leituras reais pelo proxy S3.
+
+Os mesmos 8 cenários de ponta a ponta também passaram no build conjunto de `Dockerfile.deploy`, servido localmente em `http://localhost:8089`. A revisão de telas não substitui instalação e câmera em aparelhos físicos.
+
+## Publicação
+
+O repositório é privado: [duosis-ti/app-checklist-hering-pwa](https://github.com/duosis-ti/app-checklist-hering-pwa).
+
+A aplicação está publicada no [Railway](https://app-production-5aedb.up.railway.app) com três serviços: aplicação Node/SPA no mesmo domínio HTTPS, PostgreSQL com volume persistente de 1 GB e SeaweedFS com volume persistente de 1 GB. A aplicação encaminha `/storage` ao endpoint S3 interno, preservando as URLs assinadas. O deploy automático acompanha a branch `main`.
+
+Os três serviços iniciaram com sucesso e o endpoint público de saúde respondeu HTTP 200. Os mesmos 8 cenários de ponta a ponta também passaram na URL publicada, em Chromium e WebKit. A leitura de foto assinada respondeu HTTP 200, a leitura sem assinatura retornou HTTP 403 e os endpoints protegidos sem JWT retornaram HTTP 401. A instalação e a câmera em aparelhos físicos continuam pendentes de validação manual.
