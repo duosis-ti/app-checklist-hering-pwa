@@ -1,6 +1,12 @@
 {
-  "name": "checklist-lojas", "version": "1.0.0", "private": true, "type": "module",
-  "workspaces": ["apps/*", "packages/*"],
+  "name": "checklist-lojas",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
   "scripts": {
     "dev": "concurrently -n api,web -c blue,green \"npm run dev -w @checklist/api\" \"npm run dev -w @checklist/web\"",
     "build": "npm run build --workspaces --if-present",
@@ -9,5 +15,10 @@
     "test:e2e": "playwright test",
     "start": "docker compose up --build"
   },
-  "devDependencies": {"concurrently": "^9.2.1", "@playwright/test": "^1.56.1", "typescript": "^5.9.3"}
+  "devDependencies": {
+    "@playwright/test": "^1.56.1",
+    "concurrently": "^9.2.1",
+    "prettier": "^3.9.10",
+    "typescript": "^5.9.3"
+  }
 }

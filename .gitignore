@@ -5,6 +5,7 @@ dist/
 !.env.example
 playwright-report/
 test-results/
+test-results-ux/
 *.log
 .DS_Store
 .local/

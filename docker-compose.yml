@@ -36,16 +36,16 @@ services:
       S3_ACCESS_KEY: ${S3_ACCESS_KEY:-checklist-local}
       S3_SECRET_KEY: ${S3_SECRET_KEY:-checklist-storage-local-only}
       NODE_ENV: production
-      SEED_DEMO: 'true'
+      SEED_DEMO: "true"
     depends_on:
-      db: {condition: service_healthy}
-      storage: {condition: service_started}
-    ports: ["127.0.0.1:3001:3001"]
+      db: { condition: service_healthy }
+      storage: { condition: service_started }
+    ports: ["127.0.0.1:3101:3001"]
   web:
     build:
       context: .
       dockerfile: apps/web/Dockerfile
-    ports: ["8080:80"]
+    ports: ["8088:80"]
     depends_on: [api]
 volumes:
   postgres-data:
